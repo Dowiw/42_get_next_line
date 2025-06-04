@@ -20,6 +20,8 @@ static char	*ft_left_over(char	*buffer)
 
 	i = 0;
 	j = 0;
+	if (!buffer)
+		return (NULL);
 	while (buffer[i] != '\0' && buffer[i] != '\n')
 		i++;
 	if (!buffer[i])
@@ -35,36 +37,41 @@ static char	*ft_left_over(char	*buffer)
 		i++;
 		j++;
 	}
+	out[j] = '\0';
 	free(buffer);
 	return (out);
 }
 
+// Helper to create the line (not for leftover)
 static char	*ft_line_maker(char *buffer)
 {
+	int		nl_flag;
 	char	*line;
 	size_t	i;
 
 	i = 0;
+	nl_flag = 0;
 	if (!buffer[i])
 		return (NULL);
 	while (buffer[i] != '\0' && buffer[i] != '\n')
 		i++;
-	//Check for new line or \0
-	line = malloc(sizeof(char) * (i + 2));
+	if (buffer[i] == '\n')
+		nl_flag = 1;
+	line = malloc(sizeof(char) * (i + nl_flag + 1));
 	i = 0;
 	while (buffer[i] != '\0' && buffer[i] != '\n')
 	{
 		line[i] = buffer[i];
 		i++;
 	}
-	// May return error
-	if (buffer[i] == '\0' || buffer[i])
-		line[i++] ='\n';
+	if (buffer[i] == '\n')
+		line[i++] = '\n';
+	line[i] = '\0';
 	return (line);
 }
 
 // Helper for main logic to read line into buffer and retain leftovers
-static ssize_t	ft_read_file(int fd, char *buffer, char *left_c)
+static char	*ft_read_file(int fd, char *buffer, char *left_c)
 {
 	char	*temp;
 	ssize_t	out_bytes;
@@ -74,11 +81,11 @@ static ssize_t	ft_read_file(int fd, char *buffer, char *left_c)
 	{
 		out_bytes = read(fd, buffer, BUFFER_SIZE);
 		if (out_bytes == -1)
-			return (out_bytes);
+			break ;
 		buffer[out_bytes] = '\0';
 		temp = ft_strjoin(left_c, buffer);
+		free(left_c);
 		left_c = temp;
-		free(temp);
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
@@ -98,6 +105,8 @@ static char	*ft_line_prep(int fd, char *left_c)
 		left_c[0] = '\0';
 	}
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
 	out = ft_read_file(fd, buffer, left_c);
 	return (out);
 }
@@ -109,13 +118,13 @@ char	*get_next_line(int fd)
 	char	*buffer;
 	char	*new_line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, buffer, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	buffer = ft_line_prep(fd, buffer);
+	buffer = ft_line_prep(fd, left_c);
 	if (!buffer)
 		return (NULL);
 	new_line = ft_line_maker(buffer);
-	buffer = ft_left_over(buffer);
+	left_c = ft_left_over(buffer);
 	return (new_line);
 }
 
