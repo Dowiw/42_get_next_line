@@ -1,0 +1,3 @@
+file with permissions unallowed
+if you are able to access this please do
+chmod 000 locked_file.txt
