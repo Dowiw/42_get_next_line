@@ -12,102 +12,12 @@
 
 #include "get_next_line.h"
 
-// Helper function to retain leftovers for next line
-static char	*ft_left_over(char	*buffer)
-{
-	char	*out;
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	if (!buffer) // EOF
-		return (NULL);
-	while (buffer[i] != '\0' && buffer[i] != '\n')
-		i++;
-	if (!buffer[i])
-	{
-		free(buffer);
-		return (NULL);
-	}
-	while (buffer[j] != '\0')
-		j++;
-	out = malloc(sizeof(char) * (j - i + 1));
-	j = 0;
-	i++;
-	while (buffer[i])
-	{
-		out[j] = buffer[i];
-		i++;
-		j++;
-	}
-	out[j] = '\0';
-	free(buffer);
-	return (out);
-}
-
-// Helper to create the line (not for leftover)
-static char	*ft_line_maker(char *buffer)
-{
-	int		nl_flag;
-	char	*line;
-	size_t	i;
-
-	i = 0;
-	nl_flag = 0;
-	if (!buffer[i])
-		return (NULL);
-	while (buffer[i] != '\0' && buffer[i] != '\n')
-		i++;
-	if (buffer[i] == '\n')
-		nl_flag = 1;
-	line = malloc(sizeof(char) * (i + nl_flag + 1));
-	i = 0;
-	while (buffer[i] != '\0' && buffer[i] != '\n')
-	{
-		line[i] = buffer[i];
-		i++;
-	}
-	if (buffer[i] == '\n')
-		line[i++] = '\n';
-	line[i] = '\0';
-	return (line);
-}
-
-// Helper for main logic to read line into buffer and retain leftovers
-static char	*ft_read_file(int fd, char *buffer, char *left_c)
-{
-	char	*temp;
-	ssize_t	out_bytes;
-
-	if (!left_c)
-	{
-		left_c = malloc(sizeof(char) * 1);
-		left_c[0] = '\0';
-	}
-	out_bytes = 1;
-	while (out_bytes > 0)
-	{
-		out_bytes = read(fd, buffer, BUFFER_SIZE);
-		if (out_bytes == -1)
-			break ;
-		buffer[out_bytes] = '\0';
-		temp = ft_strjoin(left_c, buffer);
-		free(left_c);
-		left_c = temp;
-		if (ft_strchr(buffer, '\n'))
-			break ;
-	}
-	free(buffer);
-	return (left_c);
-}
-
 // Function that reads a line from file descriptor
 char	*get_next_line(int fd)
 {
+	char		*buffer;
+	char		*new_line;
 	static char	*left_c;
-	char	*buffer;
-	char	*new_line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
