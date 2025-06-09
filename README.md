@@ -23,5 +23,5 @@ basically, when there are file changes before EOF, must have error
 - file must exhibit undefined behavior for binary files
 - only malloc, read, and free is allowed. the end.
 
-with motivation,
+with C and motivation,
 kmonjard
