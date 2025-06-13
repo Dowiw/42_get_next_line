@@ -76,6 +76,8 @@ char	*ft_left_over(char	*buffer)
 	while (buffer[j] != '\0')
 		j++;
 	out = malloc(sizeof(char) * (j - i + 1));
+	if (!out)
+		return (NULL);
 	j = 0;
 	i++;
 	while (buffer[i])
@@ -94,7 +96,7 @@ char	*ft_line_maker(char *buffer)
 
 	i = 0;
 	nl_flag = 0;
-	if (!buffer[i])
+	if (!buffer[i] || !buffer)
 		return (NULL);
 	while (buffer[i] != '\0' && buffer[i] != '\n')
 		i++;
@@ -119,17 +121,12 @@ char	*ft_read_file(int fd, char *buffer, char *left_c)
 	char	*temp;
 	ssize_t	out_bytes;
 
-	if (!left_c)
-	{
-		left_c = malloc(sizeof(char) * 1);
-		left_c[0] = '\0';
-	}
 	out_bytes = 1;
 	while (out_bytes > 0)
 	{
 		out_bytes = read(fd, buffer, BUFFER_SIZE);
 		if (out_bytes == -1)
-			break ;
+			return (NULL);
 		buffer[out_bytes] = '\0';
 		temp = ft_strjoin(left_c, buffer);
 		free(left_c);
