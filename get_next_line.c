@@ -22,9 +22,20 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	buffer = ft_read_file(fd, buffer, left_c);
 	if (!buffer)
 		return (NULL);
+	if (!left_c)
+	{
+		left_c = malloc(sizeof(char) * 1);
+		left_c[0] = '\0';
+	}
+	buffer = ft_read_file(fd, buffer, left_c);
+	if (!buffer)
+	{
+		free(buffer);
+		free(left_c);
+		return (NULL);
+	}
 	new_line = ft_line_maker(buffer);
 	left_c = ft_left_over(buffer);
 	return (new_line);
