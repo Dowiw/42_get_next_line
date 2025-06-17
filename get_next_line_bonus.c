@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmonjard <kmonjard@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: kmonjard <kmonjard@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/06 22:06:18 by kmonjard          #+#    #+#             */
-/*   Updated: 2025/06/17 10:29:03 by kmonjard         ###   ########.fr       */
+/*   Created: 2025/06/16 17:40:17 by kmonjard          #+#    #+#             */
+/*   Updated: 2025/06/16 17:40:18 by kmonjard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-// Function that reads a line from file descriptor
+// Function that reads a line from multiple file descriptors
 char	*get_next_line(int fd)
 {
 	char		*buffer;
