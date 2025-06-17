@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmonjard <kmonjard@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: kmonjard <kmonjard@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 16:33:21 by kmonjard          #+#    #+#             */
-/*   Updated: 2025/06/17 10:30:44 by kmonjard         ###   ########.fr       */
+/*   Created: 2025/06/16 16:03:15 by kmonjard          #+#    #+#             */
+/*   Updated: 2025/06/16 16:03:16 by kmonjard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ char	*ft_line_maker(char *buffer)
 	if (buffer[i] == '\n')
 		nl_flag = 1;
 	line = malloc(sizeof(char) * (i + nl_flag + 1));
+	if (!line)
+		return (NULL);
 	i = 0;
 	while (buffer[i] != '\0' && buffer[i] != '\n')
 	{
@@ -119,7 +121,6 @@ char	*ft_read_file(int fd, char *buffer, char *left_c)
 	char	*temp;
 	ssize_t	out_bytes;
 
-	out_bytes = 1;
 	if (!left_c)
 	{
 		left_c = malloc(sizeof(char) * 1);
@@ -127,6 +128,7 @@ char	*ft_read_file(int fd, char *buffer, char *left_c)
 			return (NULL);
 		left_c[0] = '\0';
 	}
+	out_bytes = 1;
 	while (out_bytes > 0)
 	{
 		out_bytes = read(fd, buffer, BUFFER_SIZE);
