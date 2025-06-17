@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmonjard <kmonjard@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: kmonjard <kmonjard@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:32:36 by kmonjard          #+#    #+#             */
-/*   Updated: 2025/06/06 20:30:47 by kmonjard         ###   ########.fr       */
+/*   Updated: 2025/06/17 10:28:38 by kmonjard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,6 @@ char	*get_next_line(int fd)
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	if (!left_c)
-	{
-		left_c = malloc(sizeof(char) * 1);
-		left_c[0] = '\0';
-	}
 	buffer = ft_read_file(fd, buffer, left_c);
 	if (!buffer)
 	{
