@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmonjard <kmonjard@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: kmonjard <kmonjard@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 22:08:35 by kmonjard          #+#    #+#             */
-/*   Updated: 2025/06/06 22:08:38 by kmonjard         ###   ########.fr       */
+/*   Updated: 2025/06/17 10:30:08 by kmonjard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,12 +119,14 @@ char	*ft_read_file(int fd, char *buffer, char *left_c)
 	char	*temp;
 	ssize_t	out_bytes;
 
+	out_bytes = 1;
 	if (!left_c)
 	{
 		left_c = malloc(sizeof(char) * 1);
+		if (!left_c)
+			return (NULL);
 		left_c[0] = '\0';
 	}
-	out_bytes = 1;
 	while (out_bytes > 0)
 	{
 		out_bytes = read(fd, buffer, BUFFER_SIZE);
