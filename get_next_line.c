@@ -95,37 +95,22 @@ static char	*ft_extract_and_retain(char	**line_buffer)
 }
 
 /*
-	Helper function that reads file into the static buffer.
-	Uses strjoin to combine read buffer into line buffer.
-	Returns NULL for allocation fails & read fails.
+	Helper function that does the main logic of updating.
+	Line buffer turns into a line with '\n'.
 */
-static char	*ft_read_file(int fd, char *line_buffer)
+int	ft_update_buffer(int fd, char **line_buffer)
 {
 	char	*tmp;
-	char	*buffer;
-	ssize_t	read_bytes;
 
-	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	if (!buffer)
-		return (NULL);
-	read_bytes = 1;
-	while (ft_strchr_bool(line_buffer, '\n') == 0 && read_bytes > 0)
+	tmp = ft_read_file(fd, *line_buffer);
+	if (!tmp || !tmp[0])
 	{
-		read_bytes = read(fd, buffer, BUFFER_SIZE);
-		if (read_bytes == 0)
-			break ;
-		buffer[read_bytes] = '\0';
-		tmp = ft_strjoin(line_buffer, buffer);
-		free(line_buffer);
-		line_buffer = tmp;
+		ft_free_buffer(&tmp);
+		*line_buffer = NULL;
+		return (0);
 	}
-	if (read_bytes == -1)
-	{
-		free(buffer);
-		return (NULL);
-	}
-	free(buffer);
-	return (line_buffer);
+	*line_buffer = tmp;
+	return (1);
 }
 
 char	*get_next_line(int fd)
