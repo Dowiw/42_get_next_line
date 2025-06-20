@@ -16,7 +16,7 @@
 	Helper function to keep the left overs of line_buffer.
 	Returns NULL for malloc error.
 */
-static char	*ft_keep_left_over(char *line_buffer)
+static char	*ft_keep_left_over(const char *const line_buffer)
 {
 	char	*out;
 	size_t	i;
@@ -48,7 +48,7 @@ static char	*ft_keep_left_over(char *line_buffer)
 	Cuts down to only charcters before the '\n' or string end.
 	Returns (NULL) for malloc error or empty line_buffer
 */
-static char	*ft_extract_line(const char	*line_buffer)
+static char	*ft_extract_line(const char	*const line_buffer)
 {
 	int		nl_flag;
 	char	*line;
@@ -79,7 +79,7 @@ static char	*ft_extract_line(const char	*line_buffer)
 
 /*
 	Helper function to cut down line_buffer extraction.
-	Function checks
+	Function checks if line is NULL.
 */
 static char	*ft_extract_and_retain(char	**line_buffer)
 {
