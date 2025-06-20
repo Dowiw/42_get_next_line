@@ -3,25 +3,25 @@
 #include "get_next_line.h"
 
 // cc -Wall -Werror -Wextra main.c get_next_line.c get_next_line_utils.c
-int main() {
-	int fd = open("lorem_deutsch.txt", O_RDONLY);
-	int fd2 = open("lorem.txt", O_RDONLY);
+// valgrind --leak-check=full ./a.out
 
-	char *line1eng = get_next_line(fd2);
+/*
+	IMPORTANT:
+	When files are read and gnl exits prematurely,
+	it will not free the static buffer.
+	This results in a leak of the last line.
+*/
+int main() {
+	int fd = open("lorem.txt", O_RDONLY);
+
+	char *line_eng;
 	int i = 0;
-	while ((line1eng = get_next_line(fd2)) != NULL)
+	while ((line_eng = get_next_line(fd)) != NULL)
 	{
-		printf("line %i: %s", i, line1eng);
-		free(line1eng);
+		printf("line %i: %s", i, line_eng);
+		free(line_eng);
 		i++;
 	}
-	line1eng = get_next_line(fd2);
-	printf("eof? %i: %s", i, line1eng);
-	free(line1eng);
-
-	// char *line1german = get_next_line(fd);
-	// printf("line1: %s", line1german);
-	// free(line1german);
 
 	close(fd);
 	return (0);
