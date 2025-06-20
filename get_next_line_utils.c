@@ -5,29 +5,65 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmonjard <kmonjard@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 16:03:15 by kmonjard          #+#    #+#             */
-/*   Updated: 2025/06/16 16:03:16 by kmonjard         ###   ########.fr       */
+/*   Created: 2025/06/20 13:11:47 by kmonjard          #+#    #+#             */
+/*   Updated: 2025/06/20 20:45:08 by kmonjard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-//Find char c in string s: return first found address, NULL otherwise
-char	*ft_strchr(const char *s, int c)
+char	*ft_read_file(int fd, char *line_buffer)
+{
+	char	*tmp;
+	char	*buffer;
+	ssize_t	read_bytes;
+
+	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	if (!buffer)
+		return (NULL);
+	read_bytes = 1;
+	while (ft_strchr_bool(line_buffer, '\n') == 0 && read_bytes > 0)
+	{
+		read_bytes = read(fd, buffer, BUFFER_SIZE);
+		if (read_bytes == 0)
+			break ;
+		buffer[read_bytes] = '\0';
+		tmp = ft_strjoin(line_buffer, buffer);
+		free(line_buffer);
+		line_buffer = tmp;
+	}
+	if (read_bytes == -1)
+	{
+		free(buffer);
+		return (NULL);
+	}
+	free(buffer);
+	return (line_buffer);
+}
+
+void	ft_free_buffer(char **line_buffer)
+{
+	if (line_buffer && *line_buffer)
+	{
+		free(*line_buffer);
+		*line_buffer = NULL;
+	}
+}
+
+int	ft_strchr_bool(const char *s, char c)
 {
 	while (*s)
 	{
-		if (*s == (char)c)
-			return ((char *)s);
+		if (*s == c)
+			return (1);
 		s++;
 	}
-	if ((char)c == '\0')
-		return ((char *)s);
-	return (NULL);
+	if (c == '\0')
+		return (1);
+	return (0);
 }
 
-//Concatinates s1 (prefix) to s2 (suffix) (strings unfreed)
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
 	char	*out;
 	size_t	i;
@@ -37,110 +73,40 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	j = 0;
 	if (!s1 || !s2)
 		return (NULL);
-	while (s1[i])
+	while (s1[i] != '\0')
 		i++;
-	while (s2[j])
+	while (s2[j] != '\0')
 		j++;
 	out = malloc(sizeof(char) * (i + j + 1));
 	if (!out)
 		return (NULL);
 	i = 0;
 	j = 0;
-	while (s1[i])
+	while (s1[i] != '\0')
 		out[j++] = s1[i++];
 	i = 0;
-	while (s2[i])
+	while (s2[i] != '\0')
 		out[j++] = s2[i++];
 	out[j] = '\0';
 	return (out);
 }
 
-// Helper function to retain leftovers for next line
-char	*ft_left_over(char	*buffer)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	char	*out;
-	size_t	i;
-	size_t	j;
+	void			*out;
+	size_t			i;
+	size_t			total;
+	unsigned char	*setter;
 
-	i = 0;
-	j = 0;
-	while (buffer[i] != '\0' && buffer[i] != '\n')
-		i++;
-	if (!buffer[i])
-	{
-		free(buffer);
+	if (nmemb == 0 || size == 0)
 		return (NULL);
-	}
-	while (buffer[j] != '\0')
-		j++;
-	out = malloc(sizeof(char) * (j - i + 1));
+	total = nmemb * size;
+	out = malloc(nmemb * size);
 	if (!out)
 		return (NULL);
-	j = 0;
-	i++;
-	while (buffer[i])
-		out[j++] = buffer[i++];
-	out[j] = '\0';
-	free(buffer);
+	setter = out;
+	i = 0;
+	while (i < total)
+		setter[i++] = 0;
 	return (out);
-}
-
-// Helper to create the line (not for leftover)
-char	*ft_line_maker(char *buffer)
-{
-	int		nl_flag;
-	char	*line;
-	size_t	i;
-
-	i = 0;
-	nl_flag = 0;
-	if (!buffer[i] || !buffer)
-		return (NULL);
-	while (buffer[i] != '\0' && buffer[i] != '\n')
-		i++;
-	if (buffer[i] == '\n')
-		nl_flag = 1;
-	line = malloc(sizeof(char) * (i + nl_flag + 1));
-	if (!line)
-		return (NULL);
-	i = 0;
-	while (buffer[i] != '\0' && buffer[i] != '\n')
-	{
-		line[i] = buffer[i];
-		i++;
-	}
-	if (buffer[i] == '\n')
-		line[i++] = '\n';
-	line[i] = '\0';
-	return (line);
-}
-
-// Helper for main logic to read line into buffer and retain leftovers
-char	*ft_read_file(int fd, char *buffer, char *left_c)
-{
-	char	*temp;
-	ssize_t	out_bytes;
-
-	if (!left_c)
-	{
-		left_c = malloc(sizeof(char) * 1);
-		if (!left_c)
-			return (NULL);
-		left_c[0] = '\0';
-	}
-	out_bytes = 1;
-	while (out_bytes > 0)
-	{
-		out_bytes = read(fd, buffer, BUFFER_SIZE);
-		if (out_bytes == -1)
-			return (NULL);
-		buffer[out_bytes] = '\0';
-		temp = ft_strjoin(left_c, buffer);
-		free(left_c);
-		left_c = temp;
-		if (ft_strchr(buffer, '\n'))
-			break ;
-	}
-	free(buffer);
-	return (left_c);
 }
