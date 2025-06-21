@@ -13,16 +13,16 @@ should be able to:
 - return (null) when file reaches EOF (end of file)
 
 notes:
-- helpers should be contained only in `get_next_line_utils.c` so 5 functions
-- compile your code as follows
+- compile your code as follows:
 `
 cc -Wall -Wextra -Werror -D BUFFER_SIZE=<from 1 to preferred number> <file_names>.c
 `
 - must exhibit undefined behavior if file is modified after the last call
-basically, when there are file changes before EOF, must have error
+  (basically, when there are file changes before EOF, must have error)
 - file must exhibit undefined behavior for binary files
+  (this basically means, we don't know what will happen if binary files are read)
 - **if the get_next_line call is stopped before the EOF the static variable will result in leaks**
 - only malloc, read, and free is allowed. the end.
 
-with C and motivation,
+> with C and motivation,
 kmonjard
