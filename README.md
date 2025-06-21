@@ -1,5 +1,7 @@
 # 42_get_next_line
 This project is about programming a function that returns a line read from a file descriptor.
+![image](https://github.com/user-attachments/assets/fe2c4e82-c428-40ad-b114-a3fc941e5a89)
+Finished and mandatory function got accepted! However, the bonus did not compile.
 
 The function
 `
